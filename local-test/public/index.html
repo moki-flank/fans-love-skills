@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fans Love 工作流测试台</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="toolbar" aria-label="工作流状态">
+        <div>
+          <p class="eyebrow">Fans Love</p>
+          <h1>工作流测试台</h1>
+        </div>
+        <div class="status" id="status">连接中</div>
+      </section>
+
+      <section class="workspace">
+        <aside class="panel workflow-list" aria-label="工作流列表">
+          <button class="workflow active" data-skill="star">
+            <span class="mark pink"></span>
+            <span>技能 - 追星咨询</span>
+          </button>
+          <button class="workflow" data-skill="pet">
+            <span class="mark teal"></span>
+            <span>技能 - 萌宠互动</span>
+          </button>
+          <button class="workflow" data-skill="record">
+            <span class="mark gold"></span>
+            <span>技能 - 记录鉴别</span>
+          </button>
+        </aside>
+
+        <section class="panel editor" aria-label="请求编辑器">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">POST</p>
+              <h2 id="skillTitle">技能 - 追星咨询</h2>
+            </div>
+            <button class="icon-button" id="resetButton" type="button" title="恢复示例">
+              <span aria-hidden="true">↺</span>
+            </button>
+          </div>
+          <label for="payload">请求 JSON</label>
+          <textarea id="payload" spellcheck="false"></textarea>
+          <div class="actions">
+            <button class="primary" id="sendButton" type="button">
+              <span aria-hidden="true">▶</span>
+              <span>发送</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="panel response" aria-label="响应结果">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">RESPONSE</p>
+              <h2>返回结果</h2>
+            </div>
+            <button class="icon-button" id="copyButton" type="button" title="复制响应">
+              <span aria-hidden="true">⧉</span>
+            </button>
+          </div>
+          <pre id="result">{}</pre>
+        </section>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

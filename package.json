@@ -1,0 +1,12 @@
+{
+  "name": "fans-love-skills",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "n8n:check": "node scripts/sync-n8n.mjs check",
+    "n8n:push": "node scripts/sync-n8n.mjs push",
+    "n8n:activate": "node scripts/sync-n8n.mjs activate",
+    "test:web": "node local-test/server.mjs"
+  }
+}

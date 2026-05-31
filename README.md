@@ -40,10 +40,17 @@ Upload workflow templates to n8n:
 
 ```bash
 node scripts/sync-n8n.mjs push
+node scripts/sync-n8n.mjs activate
 ```
 
 Delete all workflows is intentionally guarded:
 
 ```bash
 N8N_CONFIRM_WIPE=DELETE_ALL_N8N_WORKFLOWS node scripts/sync-n8n.mjs wipe
+```
+
+Start the local workflow tester:
+
+```bash
+npm run test:web
 ```
