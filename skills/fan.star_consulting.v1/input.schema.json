@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Star Consulting Input",
+  "type": "object",
+  "required": [
+    "user_id",
+    "star_id"
+  ],
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "card_id": {
+      "type": "string"
+    },
+    "star_id": {
+      "type": "string"
+    },
+    "available_votes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "budget_cents": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "project_id",
+          "name"
+        ],
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "target_cents": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "current_cents": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "rankings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ranking_id": {
+            "type": "string"
+          },
+          "current_rank": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "gap_to_next": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

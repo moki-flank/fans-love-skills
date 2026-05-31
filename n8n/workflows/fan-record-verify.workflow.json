@@ -1,0 +1,76 @@
+{
+  "name": "Skill - Fan Record Verify",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "skill/record-verify",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "5481dd0f-a307-4758-aa1d-c22d2e61f101",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $json.body ?? $json;\nconst findings = [];\nif (!payload.record_url && (!payload.screenshots || payload.screenshots.length === 0)) {\n  findings.push({ type: 'missing_evidence', severity: 'warning', message: '缺少可核验链接或截图，需要补充材料。' });\n}\nif (Number(payload.claimed_amount ?? 0) <= 0) {\n  findings.push({ type: 'amount_missing', severity: 'info', message: '未提供有效金额，暂不做金额一致性判断。' });\n}\nconst needsReview = findings.length > 0;\nreturn [{ json: { skill_id: 'fan.record_verify.v1', status: 'ok', verification_status: needsReview ? 'needs_review' : 'verified', confidence: needsReview ? 0.45 : 0.72, findings, recommended_action: needsReview ? '请进入人工复核或要求用户补充材料。' : '可进入下一步审核流程。', received: payload } }];"
+      },
+      "id": "5481dd0f-a307-4758-aa1d-c22d2e61f102",
+      "name": "Build Skill Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "5481dd0f-a307-4758-aa1d-c22d2e61f103",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        60,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Build Skill Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Skill Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

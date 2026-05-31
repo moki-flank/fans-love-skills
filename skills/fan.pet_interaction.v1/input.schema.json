@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pet Interaction Input",
+  "type": "object",
+  "required": [
+    "user_id",
+    "pet_id",
+    "action"
+  ],
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "card_id": {
+      "type": "string"
+    },
+    "pet_id": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "feed",
+        "play",
+        "comfort",
+        "check_in",
+        "task_reward"
+      ]
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

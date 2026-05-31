@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pet Interaction Output",
+  "type": "object",
+  "required": [
+    "reply",
+    "pet_delta"
+  ],
+  "properties": {
+    "reply": {
+      "type": "string"
+    },
+    "pet_delta": {
+      "type": "object",
+      "properties": {
+        "experience": {
+          "type": "integer"
+        },
+        "mood": {
+          "type": "string"
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "inventory_changes": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

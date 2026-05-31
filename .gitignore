@@ -1,0 +1,16 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# n8n local runtime state and secrets
+n8n/local/*
+!n8n/local/.gitkeep
+n8n/credentials/*
+*.secret.*
+
+# Dependency/cache output
+node_modules/
+.cache/
+dist/
+build/

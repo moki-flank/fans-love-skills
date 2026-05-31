@@ -1,1 +1,64 @@
-1
+{
+  "registry_id": "fans-love-skills",
+  "name": "Fans Love Skills Registry",
+  "version": "0.1.0",
+  "updated_at": "2026-06-01",
+  "homepage": "https://moki-flank.github.io/fans-love-skills/",
+  "github_repository": "git@github.com:moki-flank/fans-love-skills.git",
+  "runtime_contract": {
+    "agent_entrypoint": "/api/agent/chat",
+    "github_pages_base_url": "https://moki-flank.github.io/fans-love-skills",
+    "execution_backends": [
+      "prompt",
+      "n8n_webhook",
+      "api"
+    ],
+    "secret_policy": "Secrets live in local runtime or n8n credentials only and must not be committed."
+  },
+  "skills": [
+    {
+      "skill_id": "fan.star_consulting.v1",
+      "name": "追星咨询 Skill",
+      "version": "1.0.0",
+      "type": "api_skill",
+      "manifest_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.star_consulting.v1/skill.json",
+      "enabled": true
+    },
+    {
+      "skill_id": "fan.pet_interaction.v1",
+      "name": "萌宠互动 Skill",
+      "version": "1.0.0",
+      "type": "api_skill",
+      "manifest_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.pet_interaction.v1/skill.json",
+      "enabled": true
+    },
+    {
+      "skill_id": "fan.record_verify.v1",
+      "name": "记录鉴别 Skill",
+      "version": "1.0.0",
+      "type": "api_skill",
+      "manifest_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.record_verify.v1/skill.json",
+      "enabled": true
+    }
+  ],
+  "cards": [
+    {
+      "card_id": "pet_support_cat_v1",
+      "name": "应援猫猫",
+      "manifest_url": "https://moki-flank.github.io/fans-love-skills/cards/pet_support_cat_v1.json",
+      "enabled": true
+    },
+    {
+      "card_id": "data_strategist_v1",
+      "name": "数据策士",
+      "manifest_url": "https://moki-flank.github.io/fans-love-skills/cards/data_strategist_v1.json",
+      "enabled": true
+    },
+    {
+      "card_id": "record_detective_v1",
+      "name": "记录侦探",
+      "manifest_url": "https://moki-flank.github.io/fans-love-skills/cards/record_detective_v1.json",
+      "enabled": true
+    }
+  ]
+}

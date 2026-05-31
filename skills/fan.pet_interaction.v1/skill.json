@@ -1,0 +1,23 @@
+{
+  "skill_id": "fan.pet_interaction.v1",
+  "name": "萌宠互动 Skill",
+  "version": "1.0.0",
+  "type": "api_skill",
+  "description": "处理用户与应援宠物的互动，更新经验、心情、道具和陪伴式回复。",
+  "input_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.pet_interaction.v1/input.schema.json",
+  "output_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.pet_interaction.v1/output.schema.json",
+  "prompt_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.pet_interaction.v1/prompt.md",
+  "permissions": [
+    "read:pet_state",
+    "write:pet_state",
+    "read:user_profile"
+  ],
+  "execution": {
+    "type": "n8n_webhook",
+    "endpoint_template": "${N8N_BASE_URL}/webhook/skill/pet-interaction",
+    "method": "POST",
+    "workflow_file": "n8n/workflows/fan-pet-interaction.workflow.json"
+  },
+  "risk_level": "low",
+  "enabled": true
+}

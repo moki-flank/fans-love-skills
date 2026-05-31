@@ -1,0 +1,24 @@
+{
+  "skill_id": "fan.star_consulting.v1",
+  "name": "追星咨询 Skill",
+  "version": "1.0.0",
+  "type": "api_skill",
+  "description": "根据用户绑定明星、剩余票数、预算、众筹项目和排行榜数据生成应援建议。",
+  "input_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.star_consulting.v1/input.schema.json",
+  "output_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.star_consulting.v1/output.schema.json",
+  "prompt_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.star_consulting.v1/prompt.md",
+  "permissions": [
+    "read:user_profile",
+    "read:crowdfunding",
+    "read:ranking",
+    "read:voting_balance"
+  ],
+  "execution": {
+    "type": "n8n_webhook",
+    "endpoint_template": "${N8N_BASE_URL}/webhook/skill/star-consulting",
+    "method": "POST",
+    "workflow_file": "n8n/workflows/fan-star-consulting.workflow.json"
+  },
+  "risk_level": "medium",
+  "enabled": true
+}

@@ -1,0 +1,76 @@
+{
+  "name": "Skill - Fan Star Consulting",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "skill/star-consulting",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "7f1f3c01-1bc7-4c3b-86ea-5fa25b4f1c01",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $json.body ?? $json;\nconst availableVotes = Number(payload.available_votes ?? 0);\nconst budgetCents = Number(payload.budget_cents ?? 0);\nconst recommendations = [];\nif (availableVotes > 0) {\n  recommendations.push({ title: '优先使用现有票数', reason: '已有票数是最低风险资源，适合先处理临近截止或票差较小的任务。', priority: 'high' });\n}\nif (budgetCents > 0) {\n  recommendations.push({ title: '把预算拆成小批次', reason: '分批投入更容易根据榜单变化调整，不会一次性锁死选择。', priority: 'medium' });\n}\nif (recommendations.length === 0) {\n  recommendations.push({ title: '先同步用户和榜单数据', reason: '当前输入缺少票数或预算信息，建议先补全远程数据库数据再给具体策略。', priority: 'medium' });\n}\nreturn [{ json: { skill_id: 'fan.star_consulting.v1', status: 'ok', summary: '已生成一版应援咨询建议。', recommendations, next_actions: [{ type: 'runtime', label: '接入远程数据库后补充用户画像、项目进度和榜单差距。' }], received: payload } }];"
+      },
+      "id": "7f1f3c01-1bc7-4c3b-86ea-5fa25b4f1c02",
+      "name": "Build Skill Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "7f1f3c01-1bc7-4c3b-86ea-5fa25b4f1c03",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        60,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Build Skill Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Skill Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

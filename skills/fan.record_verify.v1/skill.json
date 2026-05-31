@@ -1,0 +1,23 @@
+{
+  "skill_id": "fan.record_verify.v1",
+  "name": "记录鉴别 Skill",
+  "version": "1.0.0",
+  "type": "api_skill",
+  "description": "对用户提交的应援记录、截图、链接或金额做基础一致性检查并返回审核建议。",
+  "input_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.record_verify.v1/input.schema.json",
+  "output_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.record_verify.v1/output.schema.json",
+  "prompt_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.record_verify.v1/prompt.md",
+  "permissions": [
+    "read:user_submission",
+    "read:record_history",
+    "write:verification_log"
+  ],
+  "execution": {
+    "type": "n8n_webhook",
+    "endpoint_template": "${N8N_BASE_URL}/webhook/skill/record-verify",
+    "method": "POST",
+    "workflow_file": "n8n/workflows/fan-record-verify.workflow.json"
+  },
+  "risk_level": "high",
+  "enabled": true
+}

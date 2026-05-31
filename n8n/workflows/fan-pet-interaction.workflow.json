@@ -1,0 +1,76 @@
+{
+  "name": "Skill - Fan Pet Interaction",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "skill/pet-interaction",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "2c409f0e-7b91-42fe-9a92-c16b5d31f101",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $json.body ?? $json;\nconst action = payload.action ?? 'check_in';\nconst expByAction = { feed: 5, play: 8, comfort: 6, check_in: 3, task_reward: 12 };\nconst experience = expByAction[action] ?? 3;\nreturn [{ json: { skill_id: 'fan.pet_interaction.v1', status: 'ok', reply: '收到互动啦，我会把这次状态变化记下来。', pet_delta: { experience, mood: action === 'comfort' ? 'settled' : 'happy', inventory_changes: [] }, next_actions: [{ type: 'runtime', label: '接入远程数据库后写入 fan_pet_state。' }], received: payload } }];"
+      },
+      "id": "2c409f0e-7b91-42fe-9a92-c16b5d31f102",
+      "name": "Build Skill Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "2c409f0e-7b91-42fe-9a92-c16b5d31f103",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        60,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Build Skill Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Skill Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
