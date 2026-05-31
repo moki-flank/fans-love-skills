@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Memory Card Generation Output",
+  "type": "object",
+  "required": [
+    "session_id",
+    "status",
+    "generated_card"
+  ],
+  "properties": {
+    "session_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "processing",
+        "completed",
+        "failed"
+      ]
+    },
+    "progress": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "generated_card": {
+      "type": "object",
+      "required": [
+        "id",
+        "memory_record_id",
+        "type",
+        "thought",
+        "mood",
+        "photo_urls",
+        "tags"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "memory_record_id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "thought": {
+          "type": "string"
+        },
+        "mood": {
+          "type": "string"
+        },
+        "photo_urls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "location": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "layout": {
+          "type": "string"
+        },
+        "cover_image_prompt": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FS Love Flutter App Context",
+  "type": "object",
+  "properties": {
+    "route": {
+      "type": "string",
+      "examples": [
+        "/pet/ai",
+        "/crowdfunding",
+        "/crowdfunding/detail",
+        "/memories"
+      ]
+    },
+    "current_tab_index": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "current_user": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "points": {
+          "type": "integer"
+        },
+        "current_star_id": {
+          "type": "string"
+        },
+        "my_star_votes_today": {
+          "type": "integer"
+        },
+        "my_star_votes_total": {
+          "type": "integer"
+        },
+        "companion_days": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": true
+    },
+    "current_star": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rank": {
+          "type": "integer"
+        },
+        "support_count": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": true
+    },
+    "pet": {
+      "type": "object",
+      "properties": {
+        "pet_id": {
+          "type": "string"
+        },
+        "intimacy": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "mood": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "stars": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "memory_records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

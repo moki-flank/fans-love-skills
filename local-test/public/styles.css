@@ -158,6 +158,18 @@ h2 {
   background: var(--gold);
 }
 
+.purple {
+  background: #7654d4;
+}
+
+.blue {
+  background: #2f80ed;
+}
+
+.green {
+  background: #27ae60;
+}
+
 .editor,
 .response {
   display: flex;

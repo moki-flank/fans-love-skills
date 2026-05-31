@@ -11,3 +11,12 @@ Required local variables:
 The sync script uses the n8n public API and sends the API key through the `X-N8N-API-KEY` header.
 
 Workflow deletion is guarded by `N8N_CONFIRM_WIPE=DELETE_ALL_N8N_WORKFLOWS` because it removes every workflow returned by the n8n API.
+
+Current production webhook paths:
+
+- `POST /webhook/agent/fans-love-chat`
+- `POST /webhook/skill/star-consulting`
+- `POST /webhook/skill/pet-interaction`
+- `POST /webhook/skill/memory-card-generation`
+- `POST /webhook/skill/daily-task-planner`
+- `POST /webhook/skill/record-verify`

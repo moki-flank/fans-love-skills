@@ -1,0 +1,76 @@
+{
+  "name": "智能体 - FS Love 应用路由",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agent/fans-love-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f01001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $json.body ?? $json;\nconst message = String(payload.message ?? '').toLowerCase();\nconst context = payload.app_context ?? {};\nconst route = String(context.route ?? '');\nconst has = (...words) => words.some((word) => message.includes(word));\nlet selectedSkillId = 'fan.pet_interaction.v1';\nlet confidence = 0.62;\nlet reply = '我在，可以陪你一起看今天该做什么。';\nlet uiActions = [];\nif (has('卡片', '回忆', '照片', '生成') || route.includes('memories')) {\n  selectedSkillId = 'fan.memory_card_generation.v1';\n  confidence = 0.86;\n  reply = '可以，我会优先帮你把回忆整理成一张可预览的卡片。';\n  uiActions = [{ type: 'navigate', label: '去创造卡片', route: '/memories' }];\n} else if (has('任务', '积分', '奖励', '亲密') || route.includes('/pet/task')) {\n  selectedSkillId = 'fan.daily_task_planner.v1';\n  confidence = 0.84;\n  reply = '今天先做最接近完成的任务，再领能马上到账的奖励。';\n  uiActions = [{ type: 'navigate', label: '查看今日任务', route: '/pet/task' }];\n} else if (has('众筹', '投票', '榜', '排行', '项目', '应援') || route.includes('/crowdfunding')) {\n  selectedSkillId = 'fan.star_consulting.v1';\n  confidence = 0.82;\n  reply = '我会结合票数、项目进度和榜单位置，给你一个不焦虑的应援顺序。';\n  uiActions = [{ type: 'navigate', label: '查看众筹', route: '/crowdfunding' }];\n} else if (has('审核', '核验', '截图', '金额', '记录')) {\n  selectedSkillId = 'fan.record_verify.v1';\n  confidence = 0.78;\n  reply = '这类内容适合先做一致性检查，低置信度结果会交给人工复核。';\n} else if (has('喂', '摸', '玩', '宠物', '陪', 'emo', '小emo')) {\n  selectedSkillId = 'fan.pet_interaction.v1';\n  confidence = 0.8;\n  reply = '小 emo 收到啦，这次互动会转成心情和亲密度变化。';\n  uiActions = [{ type: 'navigate', label: '回到宠物页', route: '/pet' }];\n}\nconst skillResult = {\n  route,\n  current_user_id: context.current_user?.id ?? payload.user_id,\n  current_star: context.current_star?.name ?? context.current_user?.current_star_id,\n  pet_intimacy: context.pet?.intimacy,\n  projects_count: Array.isArray(context.projects) ? context.projects.length : 0,\n  tasks_count: Array.isArray(context.tasks) ? context.tasks.length : 0,\n  memory_records_count: Array.isArray(context.memory_records) ? context.memory_records.length : 0\n};\nreturn [{ json: { skill_id: 'fan.app_agent.v1', status: 'ok', reply, selected_skill_id: selectedSkillId, confidence, skill_result: skillResult, ui_actions: uiActions, state_patches: [], received: payload } }];"
+      },
+      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f01002",
+      "name": "Route Skill",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f01003",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        60,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Route Skill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Skill": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

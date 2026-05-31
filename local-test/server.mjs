@@ -12,8 +12,11 @@ loadEnvFile(join(root, ".env.local"));
 loadEnvFile(join(root, ".env"));
 
 const skillRoutes = {
+  "/api/agent/fans-love-chat": "/webhook/agent/fans-love-chat",
   "/api/skill/star-consulting": "/webhook/skill/star-consulting",
   "/api/skill/pet-interaction": "/webhook/skill/pet-interaction",
+  "/api/skill/memory-card-generation": "/webhook/skill/memory-card-generation",
+  "/api/skill/daily-task-planner": "/webhook/skill/daily-task-planner",
   "/api/skill/record-verify": "/webhook/skill/record-verify"
 };
 

@@ -1,0 +1,37 @@
+{
+  "agent_id": "fans_love_app_agent.v1",
+  "name": "FS Love 应用智能体",
+  "version": "1.0.0",
+  "entry_skill_id": "fan.app_agent.v1",
+  "default_card_id": "pet_support_cat_v1",
+  "description": "面向 FS Love Flutter App 的统一智能体，负责根据当前页面、用户消息和 AppState 上下文选择合适 Skill。",
+  "context_schema_url": "https://moki-flank.github.io/fans-love-skills/integrations/fans-love/app-context.schema.json",
+  "allowed_skills": [
+    "fan.app_agent.v1",
+    "fan.pet_interaction.v1",
+    "fan.daily_task_planner.v1",
+    "fan.memory_card_generation.v1",
+    "fan.star_consulting.v1",
+    "fan.record_verify.v1"
+  ],
+  "routing_hints": {
+    "/pet/ai": [
+      "fan.app_agent.v1",
+      "fan.pet_interaction.v1",
+      "fan.daily_task_planner.v1"
+    ],
+    "/pet/task": [
+      "fan.daily_task_planner.v1"
+    ],
+    "/crowdfunding": [
+      "fan.star_consulting.v1"
+    ],
+    "/crowdfunding/detail": [
+      "fan.star_consulting.v1"
+    ],
+    "/memories": [
+      "fan.memory_card_generation.v1"
+    ]
+  },
+  "enabled": true
+}

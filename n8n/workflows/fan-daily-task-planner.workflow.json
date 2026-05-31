@@ -1,0 +1,76 @@
+{
+  "name": "技能 - 每日任务规划",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "skill/daily-task-planner",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0ac5f92f-16dd-4127-9c47-51c1e0f01001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $json.body ?? $json;\nconst tasks = Array.isArray(payload.tasks) ? payload.tasks : [];\nconst petIntimacy = Number(payload.pet_intimacy ?? payload.app_context?.pet?.intimacy ?? 0);\nconst normalize = (task) => ({\n  task_id: task.id,\n  title: task.title ?? '今日小任务',\n  reward_points: Number(task.reward_points ?? task.rewardPoints ?? 0),\n  current_progress: Number(task.current_progress ?? task.currentProgress ?? 0),\n  total_progress: Number(task.total_progress ?? task.totalProgress ?? 1),\n  is_completed: Boolean(task.is_completed ?? task.isCompleted),\n  is_claimable: Boolean(task.is_claimable ?? task.isClaimable),\n  type: task.type ?? 'daily'\n});\nlet candidates = tasks.map(normalize).filter((task) => !task.is_completed);\ncandidates.sort((a, b) => {\n  if (a.is_claimable !== b.is_claimable) return a.is_claimable ? -1 : 1;\n  const ap = a.current_progress / Math.max(a.total_progress, 1);\n  const bp = b.current_progress / Math.max(b.total_progress, 1);\n  return bp - ap || b.reward_points - a.reward_points;\n});\nif (candidates.length === 0) {\n  candidates = [\n    { task_id: 'check_pet', title: '和小 emo 互动一次', reward_points: 10, current_progress: 0, total_progress: 1, is_claimable: false, type: 'pet' },\n    { task_id: 'view_project', title: '查看一个应援项目', reward_points: 8, current_progress: 0, total_progress: 1, is_claimable: false, type: 'crowdfunding' },\n    { task_id: 'save_memory', title: '记录一条今天的回忆', reward_points: 12, current_progress: 0, total_progress: 1, is_claimable: false, type: 'memory' }\n  ];\n}\nconst recommendedTasks = candidates.slice(0, 3).map((task, index) => ({\n  task_id: task.task_id,\n  title: task.title,\n  priority: index === 0 ? 'high' : 'medium',\n  reason: task.is_claimable ? '奖励已经可领取，先收下最稳。' : (task.current_progress > 0 ? '已经有进度，继续完成成本更低。' : '适合作为今天的轻量启动任务。')\n}));\nconst petSuggestion = petIntimacy < 60 ? '亲密度偏低，今天可以先做一次宠物互动。' : '亲密度状态不错，任务节奏可以轻一点。';\nreturn [{ json: { skill_id: 'fan.daily_task_planner.v1', status: 'ok', summary: '已整理今日任务优先级。', recommended_tasks: recommendedTasks, pet_suggestion: petSuggestion, next_actions: [{ type: 'navigate', label: '打开今日任务', route: '/pet/task' }], received: payload } }];"
+      },
+      "id": "0ac5f92f-16dd-4127-9c47-51c1e0f01002",
+      "name": "Plan Daily Tasks",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "0ac5f92f-16dd-4127-9c47-51c1e0f01003",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        60,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Plan Daily Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plan Daily Tasks": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "skill_id": "fan.app_agent.v1",
+  "name": "FS Love 应用智能体 Skill",
+  "version": "1.0.0",
+  "type": "agent_skill",
+  "description": "面向 FS Love Flutter App 的统一对话入口，根据当前页面、用户消息和 AppState 上下文选择宠物、任务、回忆卡片、众筹或审核 Skill。",
+  "input_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.app_agent.v1/input.schema.json",
+  "output_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.app_agent.v1/output.schema.json",
+  "prompt_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.app_agent.v1/prompt.md",
+  "context_schema_url": "https://moki-flank.github.io/fans-love-skills/integrations/fans-love/app-context.schema.json",
+  "permissions": [
+    "read:app_context",
+    "read:user_profile",
+    "route:skill_call"
+  ],
+  "allowed_skills": [
+    "fan.pet_interaction.v1",
+    "fan.daily_task_planner.v1",
+    "fan.memory_card_generation.v1",
+    "fan.star_consulting.v1",
+    "fan.record_verify.v1"
+  ],
+  "execution": {
+    "type": "n8n_webhook",
+    "endpoint_template": "${N8N_BASE_URL}/webhook/agent/fans-love-chat",
+    "method": "POST",
+    "workflow_file": "n8n/workflows/fans-love-app-agent.workflow.json"
+  },
+  "risk_level": "medium",
+  "enabled": true
+}

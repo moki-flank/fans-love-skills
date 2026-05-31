@@ -1,4 +1,66 @@
 const skills = {
+  agent: {
+    title: "智能体 - FS Love 应用路由",
+    route: "/api/agent/fans-love-chat",
+    sample: {
+      user_id: "user_001",
+      conversation_id: "local-conversation",
+      card_id: "pet_support_cat_v1",
+      message: "帮我看看今天先做任务还是去投票？",
+      app_context: {
+        route: "/pet/ai",
+        current_tab_index: 0,
+        current_user: {
+          id: "user_001",
+          nickname: "Archer Fan",
+          points: 2568,
+          current_star_id: "star_001",
+          my_star_votes_today: 12,
+          my_star_votes_total: 20,
+          companion_days: 197
+        },
+        current_star: {
+          id: "star_001",
+          name: "Archer",
+          rank: 1,
+          support_count: 125669980
+        },
+        pet: {
+          pet_id: "emo",
+          intimacy: 75,
+          mood: "happy"
+        },
+        projects: [
+          {
+            id: "cf_001",
+            title: "应援演唱会应援项目",
+            star_id: "star_001",
+            target_votes: 50000,
+            current_votes: 33000,
+            status: "active"
+          }
+        ],
+        tasks: [
+          {
+            id: "daily_check_in",
+            title: "今日签到",
+            current_progress: 1,
+            total_progress: 1,
+            reward_points: 10,
+            is_claimable: true,
+            type: "daily"
+          }
+        ],
+        memory_records: [
+          {
+            id: "record_001",
+            content: "很开心，今天的演出太棒了！",
+            image_urls: ["assets/images/democard1.png"]
+          }
+        ]
+      }
+    }
+  },
   star: {
     title: "技能 - 追星咨询",
     route: "/api/skill/star-consulting",
@@ -38,6 +100,66 @@ const skills = {
       }
     }
   },
+  memory: {
+    title: "技能 - 回忆卡片生成",
+    route: "/api/skill/memory-card-generation",
+    sample: {
+      user_id: "user_001",
+      card_id: "pet_support_cat_v1",
+      style: "warm_album",
+      replace_existing_for_record: true,
+      record: {
+        id: "record_001",
+        content: "很开心，今天的演出太棒了！Archer 的歌声真的让我感动落泪了。",
+        location: "上海梅赛德斯奔驰文化中心",
+        created_at: "2026-05-11T22:18:00+08:00",
+        image_urls: [
+          "assets/images/democard1.png",
+          "assets/images/democard2.png",
+          "assets/images/democard3.png"
+        ]
+      }
+    }
+  },
+  task: {
+    title: "技能 - 每日任务规划",
+    route: "/api/skill/daily-task-planner",
+    sample: {
+      user_id: "user_001",
+      card_id: "pet_support_cat_v1",
+      points: 2568,
+      pet_intimacy: 75,
+      current_star: {
+        id: "star_001",
+        name: "Archer",
+        rank: 1
+      },
+      tasks: [
+        {
+          id: "daily_check_in",
+          title: "今日签到",
+          description: "打开 App 完成签到",
+          current_progress: 1,
+          total_progress: 1,
+          reward_points: 10,
+          is_completed: false,
+          is_claimable: true,
+          type: "daily"
+        },
+        {
+          id: "pet_touch",
+          title: "和小 emo 互动",
+          description: "轻点宠物增加亲密度",
+          current_progress: 0,
+          total_progress: 1,
+          reward_points: 8,
+          is_completed: false,
+          is_claimable: false,
+          type: "pet"
+        }
+      ]
+    }
+  },
   record: {
     title: "技能 - 记录鉴别",
     route: "/api/skill/record-verify",
@@ -62,7 +184,7 @@ const resetButton = document.querySelector("#resetButton");
 const copyButton = document.querySelector("#copyButton");
 const workflowButtons = [...document.querySelectorAll(".workflow")];
 
-let activeSkill = "star";
+let activeSkill = "agent";
 
 function pretty(value) {
   return JSON.stringify(value, null, 2);

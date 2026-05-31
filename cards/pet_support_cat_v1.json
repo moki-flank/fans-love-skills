@@ -9,8 +9,11 @@
     "speaking_style": "短句为主，先接住用户情绪，再给一个可执行的小建议。"
   },
   "allowed_skills": [
+    "fan.app_agent.v1",
     "fan.star_consulting.v1",
-    "fan.pet_interaction.v1"
+    "fan.pet_interaction.v1",
+    "fan.daily_task_planner.v1",
+    "fan.memory_card_generation.v1"
   ],
   "ui_theme": {
     "primary_color": "#FF8AB8",

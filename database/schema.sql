@@ -29,3 +29,40 @@ create table if not exists fan_record_verifications (
   findings jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default now()
 );
+
+create table if not exists fan_agent_messages (
+  id bigserial primary key,
+  conversation_id text not null,
+  user_id text not null,
+  card_id text,
+  route text,
+  user_message text not null,
+  selected_skill_id text,
+  assistant_reply text,
+  app_context jsonb not null default '{}'::jsonb,
+  skill_result jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists fan_memory_card_jobs (
+  session_id text primary key,
+  user_id text not null,
+  memory_record_id text not null,
+  style text not null default 'warm_album',
+  status text not null default 'queued',
+  progress numeric not null default 0,
+  input_record jsonb not null default '{}'::jsonb,
+  generated_card jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists fan_daily_task_recommendations (
+  id bigserial primary key,
+  user_id text not null,
+  pet_intimacy integer,
+  current_star_id text,
+  recommended_tasks jsonb not null default '[]'::jsonb,
+  pet_suggestion text,
+  created_at timestamptz not null default now()
+);

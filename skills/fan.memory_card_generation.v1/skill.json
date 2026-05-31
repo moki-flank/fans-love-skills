@@ -1,0 +1,23 @@
+{
+  "skill_id": "fan.memory_card_generation.v1",
+  "name": "回忆卡片生成 Skill",
+  "version": "1.0.0",
+  "type": "api_skill",
+  "description": "根据 FS Love 的 MemoryRecordModel 生成可保存的 CardModel 预览，替代当前 AppState 里的本地 mock 生成流程。",
+  "input_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.memory_card_generation.v1/input.schema.json",
+  "output_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.memory_card_generation.v1/output.schema.json",
+  "prompt_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.memory_card_generation.v1/prompt.md",
+  "permissions": [
+    "read:memory_record",
+    "read:user_profile",
+    "write:memory_card_preview"
+  ],
+  "execution": {
+    "type": "n8n_webhook",
+    "endpoint_template": "${N8N_BASE_URL}/webhook/skill/memory-card-generation",
+    "method": "POST",
+    "workflow_file": "n8n/workflows/fan-memory-card-generation.workflow.json"
+  },
+  "risk_level": "medium",
+  "enabled": true
+}

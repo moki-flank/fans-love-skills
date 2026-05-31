@@ -12,6 +12,15 @@ GitHub stores static definitions:
 
 n8n, an API server, or a worker executes the real side effects. The agent runtime reads this registry, chooses a skill, validates input, calls the configured execution backend, and formats the result in the selected card style.
 
+The current registry is aligned with the local Flutter app at `/Users/mokiwang/Desktop/Fans-love`:
+
+- `fan.app_agent.v1`: unified `/pet/ai` chat router
+- `fan.memory_card_generation.v1`: replacement contract for the current mock memory card generation flow
+- `fan.daily_task_planner.v1`: task planner for the currently empty pet task page
+- `fan.star_consulting.v1`: crowdfunding and ranking advice
+- `fan.pet_interaction.v1`: pet interaction state updates
+- `fan.record_verify.v1`: record and screenshot verification
+
 ## Layout
 
 ```text
@@ -20,6 +29,8 @@ cards/      Persona cards and allowed skill lists
 n8n/        Importable n8n workflow templates, excluding local secrets
 scripts/    Local sync tools
 database/   Runtime database schema draft
+agents/     Agent manifests and system prompts
+integrations/ App-specific schemas and contracts
 ```
 
 ## Local Setup

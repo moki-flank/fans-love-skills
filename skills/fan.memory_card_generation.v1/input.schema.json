@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Memory Card Generation Input",
+  "type": "object",
+  "required": [
+    "user_id",
+    "record"
+  ],
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "card_id": {
+      "type": "string"
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "id",
+        "content",
+        "image_urls"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "image_urls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "style": {
+      "type": "string",
+      "enum": [
+        "warm_album",
+        "concert_ticket",
+        "clean_story"
+      ],
+      "default": "warm_album"
+    },
+    "replace_existing_for_record": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "additionalProperties": true
+}

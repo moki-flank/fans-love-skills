@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FS Love App Agent Input",
+  "type": "object",
+  "required": [
+    "user_id",
+    "message"
+  ],
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "conversation_id": {
+      "type": "string"
+    },
+    "card_id": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "locale": {
+      "type": "string",
+      "default": "zh-CN"
+    },
+    "app_context": {
+      "$ref": "https://moki-flank.github.io/fans-love-skills/integrations/fans-love/app-context.schema.json"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FS Love App Agent Output",
+  "type": "object",
+  "required": [
+    "reply",
+    "selected_skill_id"
+  ],
+  "properties": {
+    "reply": {
+      "type": "string"
+    },
+    "selected_skill_id": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "skill_result": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "ui_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "navigate",
+              "confirm",
+              "open_sheet",
+              "show_toast",
+              "none"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "route": {
+            "type": "string"
+          },
+          "arguments": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "state_patches": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

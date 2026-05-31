@@ -1,0 +1,76 @@
+{
+  "name": "技能 - 回忆卡片生成",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "skill/memory-card-generation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "b9403a7c-3f80-4939-8aef-e1c8c0f01001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $json.body ?? $json;\nconst record = payload.record ?? {};\nconst style = payload.style ?? 'warm_album';\nconst imageUrls = Array.isArray(record.image_urls) ? record.image_urls : (Array.isArray(record.imageUrls) ? record.imageUrls : []);\nconst content = String(record.content ?? '这是一条值得保存的回忆。').replace(/\\s+/g, ' ').trim();\nconst mood = /开心|棒|感动|喜欢|值得|快乐|激动/.test(content) ? 'happy' : (/安静|认真|想念|难过/.test(content) ? 'calm' : 'okay');\nconst tags = new Set(['时间']);\nif (imageUrls.length > 0) tags.add('照片');\nif (String(record.location ?? '').trim()) tags.add('位置');\nconst layoutByStyle = { warm_album: 'soft_album_grid', concert_ticket: 'ticket_stub_story', clean_story: 'minimal_story_card' };\nconst generatedCard = {\n  id: `card_${Date.now()}`,\n  memory_record_id: record.id ?? `record_${Date.now()}`,\n  type: 'memory',\n  thought: content.length > 140 ? `${content.slice(0, 137)}...` : content,\n  mood,\n  photo_urls: imageUrls,\n  location: record.location,\n  tags: [...tags],\n  layout: layoutByStyle[style] ?? layoutByStyle.warm_album,\n  cover_image_prompt: `Create a ${style} fan memory card using ${imageUrls.length} photo(s), preserving the original memory tone.`\n};\nreturn [{ json: { skill_id: 'fan.memory_card_generation.v1', status: 'completed', session_id: `session_${Date.now()}`, progress: 1, generated_card: generatedCard, next_actions: [{ type: 'confirm', label: '保存这张卡片' }, { type: 'open_sheet', label: '换一种卡片风格' }], received: payload } }];"
+      },
+      "id": "b9403a7c-3f80-4939-8aef-e1c8c0f01002",
+      "name": "Build Card Preview",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "b9403a7c-3f80-4939-8aef-e1c8c0f01003",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        60,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Build Card Preview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Card Preview": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
