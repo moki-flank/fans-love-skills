@@ -4,6 +4,8 @@ const skills = {
     route: "/api/agent/loop",
     sample: {
       user_id: "user_001",
+      agent_id: "fans_love_loop_agent.v1",
+      entry_skill_id: "fan.codex_loop_agent.v1",
       conversation_id: "local-loop-conversation",
       card_id: "pet_support_cat_v1",
       message: "帮我判断今天要先做什么，如果需要就调用对应 skill，直到没有下一步。",

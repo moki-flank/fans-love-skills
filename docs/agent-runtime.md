@@ -2,6 +2,9 @@
 
 `fan.codex_loop_agent.v1` is the local large-model runtime for FS Love.
 
+It is the default intelligent agent entrypoint. See
+`docs/agent-closed-loop-plan.md` for the end-to-end plan.
+
 It uses the OpenAI Responses API with function tools:
 
 - `call_skill`: asks the runtime to call one allowed FS Love Skill through n8n.

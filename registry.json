@@ -1,18 +1,30 @@
 {
   "registry_id": "fans-love-skills",
   "name": "Fans Love Skills Registry",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "updated_at": "2026-06-01",
   "homepage": "https://moki-flank.github.io/fans-love-skills/",
   "github_repository": "git@github.com:moki-flank/fans-love-skills.git",
   "runtime_contract": {
-    "agent_entrypoint": "/api/agent/chat",
+    "default_agent_id": "fans_love_loop_agent.v1",
+    "default_entry_skill_id": "fan.codex_loop_agent.v1",
+    "default_card_id": "pet_support_cat_v1",
+    "agent_entrypoint": "/api/agent/loop",
     "github_pages_base_url": "https://moki-flank.github.io/fans-love-skills",
     "execution_backends": [
       "prompt",
       "n8n_webhook",
-      "api"
+      "api",
+      "agent_runtime",
+      "openai_responses"
     ],
+    "default_invocation": {
+      "method": "POST",
+      "endpoint": "/api/agent/loop",
+      "agent_id": "fans_love_loop_agent.v1",
+      "entry_skill_id": "fan.codex_loop_agent.v1",
+      "description": "Flutter and other clients should call this endpoint first. The loop agent decides whether any downstream Skill is needed."
+    },
     "secret_policy": "Secrets live in local runtime or n8n credentials only and must not be committed."
   },
   "skills": [
@@ -22,6 +34,7 @@
       "version": "1.0.0",
       "type": "agent_skill",
       "manifest_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.codex_loop_agent.v1/skill.json",
+      "default": true,
       "enabled": true
     },
     {
@@ -79,6 +92,7 @@
       "name": "FS Love Codex 式循环智能体",
       "manifest_url": "https://moki-flank.github.io/fans-love-skills/agents/fans_love_loop_agent.v1/agent.json",
       "entry_skill_id": "fan.codex_loop_agent.v1",
+      "default": true,
       "enabled": true
     },
     {

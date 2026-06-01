@@ -17,6 +17,15 @@ Flutter should call one stable endpoint for the large-model loop:
 POST /api/agent/loop
 ```
 
+Default request target:
+
+```json
+{
+  "agent_id": "fans_love_loop_agent.v1",
+  "entry_skill_id": "fan.codex_loop_agent.v1"
+}
+```
+
 Minimum request:
 
 ```json
@@ -47,3 +56,11 @@ Minimum request:
 The agent may return `ui_actions` that Flutter can render as buttons or execute after user confirmation. Route names should reuse `AppConstants` values from `lib/core/constants/app_constants.dart`.
 
 Use `fan.app_agent.v1` only for deterministic lightweight routing. Use `fan.codex_loop_agent.v1` when the app wants the model to plan, call multiple Skills if useful, observe results, and stop only when no next action is needed.
+
+Default Flutter behavior:
+
+1. `PetAIPage` sends user message and `AppState` snapshot to `/api/agent/loop`.
+2. Backend loads `fans_love_loop_agent.v1`.
+3. Runtime exposes allowed Skills as tools.
+4. Model calls only the Skills it needs.
+5. Runtime returns final `reply`, `steps`, `used_skill_ids`, and `ui_actions`.

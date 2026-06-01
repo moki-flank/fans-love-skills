@@ -3,6 +3,7 @@
   "name": "Codex 式循环智能体 Skill",
   "version": "1.0.0",
   "type": "agent_skill",
+  "default": true,
   "description": "接入大模型运行计划-执行-观察循环。模型会判断是否需要调用 FS Love Skills，并在没有下一步动作时停止。",
   "input_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.codex_loop_agent.v1/input.schema.json",
   "output_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.codex_loop_agent.v1/output.schema.json",

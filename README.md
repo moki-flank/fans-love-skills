@@ -12,6 +12,8 @@ GitHub stores static definitions:
 
 n8n, an API server, or a worker executes the real side effects. The agent runtime reads this registry, chooses a skill, validates input, calls the configured execution backend, and formats the result in the selected card style.
 
+The default intelligent agent is `fans_love_loop_agent.v1`, and clients should call `POST /api/agent/loop` first.
+
 The current registry is aligned with the local Flutter app at `/Users/mokiwang/Desktop/Fans-love`:
 
 - `fan.app_agent.v1`: unified `/pet/ai` chat router
@@ -33,6 +35,8 @@ database/   Runtime database schema draft
 agents/     Agent manifests and system prompts
 integrations/ App-specific schemas and contracts
 ```
+
+See `docs/agent-closed-loop-plan.md` for the default agent and full closed-loop plan.
 
 ## Local Setup
 

@@ -2,8 +2,10 @@
   "agent_id": "fans_love_loop_agent.v1",
   "name": "FS Love Codex 式循环智能体",
   "version": "1.0.0",
+  "default": true,
   "entry_skill_id": "fan.codex_loop_agent.v1",
   "default_card_id": "pet_support_cat_v1",
+  "default_endpoint": "/api/agent/loop",
   "description": "使用大模型运行计划、调用 Skill、观察结果、继续执行或停止的循环智能体。",
   "context_schema_url": "https://moki-flank.github.io/fans-love-skills/integrations/fans-love/app-context.schema.json",
   "allowed_skills": [
@@ -17,9 +19,17 @@
   "runtime": {
     "type": "openai_responses_loop",
     "local_endpoint": "/api/agent/loop",
+    "default_invocation": true,
     "model_env": "OPENAI_MODEL",
     "api_key_env": "OPENAI_API_KEY",
     "default_max_steps": 20
+  },
+  "loop_closure": {
+    "plan": "模型先判断当前目标和上下文，形成下一步。",
+    "select": "模型只在必要时选择一个最小 Skill。",
+    "execute": "runtime 通过 n8n webhook 或本地执行器调用 Skill。",
+    "observe": "runtime 将 Skill 输出作为观察结果回填给模型。",
+    "stop": "模型确认没有下一步、缺少用户输入、触发安全边界或达到步数上限时停止。"
   },
   "enabled": true
 }
