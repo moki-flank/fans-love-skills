@@ -7,6 +7,7 @@
     "n8n:check": "node scripts/sync-n8n.mjs check",
     "n8n:push": "node scripts/sync-n8n.mjs push",
     "n8n:activate": "node scripts/sync-n8n.mjs activate",
+    "agent:loop": "node scripts/run-agent-loop.mjs",
     "test:web": "node local-test/server.mjs"
   }
 }

@@ -20,3 +20,9 @@ Current production webhook paths:
 - `POST /webhook/skill/memory-card-generation`
 - `POST /webhook/skill/daily-task-planner`
 - `POST /webhook/skill/record-verify`
+
+The Codex-style large-model loop is local runtime first:
+
+- `POST /api/agent/loop`
+
+That runtime can call the n8n webhooks above as tools.

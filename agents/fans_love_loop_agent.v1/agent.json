@@ -1,0 +1,25 @@
+{
+  "agent_id": "fans_love_loop_agent.v1",
+  "name": "FS Love Codex 式循环智能体",
+  "version": "1.0.0",
+  "entry_skill_id": "fan.codex_loop_agent.v1",
+  "default_card_id": "pet_support_cat_v1",
+  "description": "使用大模型运行计划、调用 Skill、观察结果、继续执行或停止的循环智能体。",
+  "context_schema_url": "https://moki-flank.github.io/fans-love-skills/integrations/fans-love/app-context.schema.json",
+  "allowed_skills": [
+    "fan.app_agent.v1",
+    "fan.pet_interaction.v1",
+    "fan.daily_task_planner.v1",
+    "fan.memory_card_generation.v1",
+    "fan.star_consulting.v1",
+    "fan.record_verify.v1"
+  ],
+  "runtime": {
+    "type": "openai_responses_loop",
+    "local_endpoint": "/api/agent/loop",
+    "model_env": "OPENAI_MODEL",
+    "api_key_env": "OPENAI_API_KEY",
+    "default_max_steps": 20
+  },
+  "enabled": true
+}

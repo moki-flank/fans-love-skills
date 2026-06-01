@@ -170,6 +170,10 @@ h2 {
   background: #27ae60;
 }
 
+.black {
+  background: #172026;
+}
+
 .editor,
 .response {
   display: flex;

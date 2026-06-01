@@ -4,17 +4,17 @@ This contract is derived from `/Users/mokiwang/Desktop/Fans-love`.
 
 Observed app modules:
 
-- `PetAIPage`: currently an empty AI interaction page, best mapped to `fan.app_agent.v1`.
+- `PetAIPage`: currently an empty AI interaction page, best mapped to `fan.codex_loop_agent.v1` for large-model loops or `fan.app_agent.v1` for deterministic lightweight routing.
 - `PetTaskPage`: currently an empty task page, best mapped to `fan.daily_task_planner.v1`.
 - `MemoryCardCreatePage`: currently uses local mock generation, best mapped to `fan.memory_card_generation.v1`.
 - `CrowdfundingDetailPage`: supports voting and project progress, mapped to `fan.star_consulting.v1`.
 - `StarRankingPage`: local ranking view, mapped to `fan.star_consulting.v1`.
 - `AppState`: Provider state source for `currentUser`, `currentStar`, `projects`, `stars`, `tasks`, `memoryRecords`, `cards`, and `petIntimacy`.
 
-Flutter should call one stable endpoint:
+Flutter should call one stable endpoint for the large-model loop:
 
 ```text
-POST /api/agent/chat
+POST /api/agent/loop
 ```
 
 Minimum request:
@@ -45,3 +45,5 @@ Minimum request:
 ```
 
 The agent may return `ui_actions` that Flutter can render as buttons or execute after user confirmation. Route names should reuse `AppConstants` values from `lib/core/constants/app_constants.dart`.
+
+Use `fan.app_agent.v1` only for deterministic lightweight routing. Use `fan.codex_loop_agent.v1` when the app wants the model to plan, call multiple Skills if useful, observe results, and stop only when no next action is needed.

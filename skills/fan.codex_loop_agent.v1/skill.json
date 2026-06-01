@@ -1,0 +1,50 @@
+{
+  "skill_id": "fan.codex_loop_agent.v1",
+  "name": "Codex 式循环智能体 Skill",
+  "version": "1.0.0",
+  "type": "agent_skill",
+  "description": "接入大模型运行计划-执行-观察循环。模型会判断是否需要调用 FS Love Skills，并在没有下一步动作时停止。",
+  "input_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.codex_loop_agent.v1/input.schema.json",
+  "output_schema_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.codex_loop_agent.v1/output.schema.json",
+  "prompt_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.codex_loop_agent.v1/prompt.md",
+  "context_schema_url": "https://moki-flank.github.io/fans-love-skills/integrations/fans-love/app-context.schema.json",
+  "permissions": [
+    "read:app_context",
+    "read:skill_registry",
+    "route:skill_call",
+    "call:n8n_webhook",
+    "call:llm"
+  ],
+  "allowed_skills": [
+    "fan.app_agent.v1",
+    "fan.pet_interaction.v1",
+    "fan.daily_task_planner.v1",
+    "fan.memory_card_generation.v1",
+    "fan.star_consulting.v1",
+    "fan.record_verify.v1"
+  ],
+  "execution": {
+    "type": "agent_runtime",
+    "endpoint": "/api/agent/loop",
+    "method": "POST",
+    "runtime_file": "runtime/agent-loop.mjs"
+  },
+  "loop_policy": {
+    "stop_when": [
+      "model returns no tool calls",
+      "model calls finish_agent_loop",
+      "model asks for missing user input",
+      "max_steps reached"
+    ],
+    "default_max_steps": 20,
+    "allow_unbounded_with_env": "AGENT_MAX_STEPS=0"
+  },
+  "model": {
+    "provider": "openai",
+    "api": "responses",
+    "default_model_env": "OPENAI_MODEL",
+    "api_key_env": "OPENAI_API_KEY"
+  },
+  "risk_level": "high",
+  "enabled": true
+}

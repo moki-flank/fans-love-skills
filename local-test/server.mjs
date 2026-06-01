@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 import { existsSync, readFileSync } from "node:fs";
 import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { runAgentLoop } from "../runtime/agent-loop.mjs";
 
 const root = resolve(fileURLToPath(new URL(".", import.meta.url)), "..");
 const publicDir = join(root, "local-test", "public");
@@ -108,6 +109,12 @@ async function listWorkflows(response) {
   response.end(text);
 }
 
+async function runLocalAgentLoop(request, response) {
+  const body = await readRequestBody(request);
+  const result = await runAgentLoop(body, { root });
+  json(response, result.status === "failed" ? 500 : 200, result);
+}
+
 function serveStatic(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
   const pathname = url.pathname === "/" ? "/index.html" : url.pathname;
@@ -132,6 +139,10 @@ const server = createServer(async (request, response) => {
     const url = new URL(request.url, `http://${request.headers.host}`);
     if (request.method === "GET" && url.pathname === "/api/workflows") {
       await listWorkflows(response);
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/api/agent/loop") {
+      await runLocalAgentLoop(request, response);
       return;
     }
     if (request.method === "POST" && skillRoutes[url.pathname]) {

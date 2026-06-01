@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Codex Loop Agent Output",
+  "type": "object",
+  "required": [
+    "status",
+    "reply",
+    "steps"
+  ],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "needs_user_input",
+        "max_steps_reached",
+        "failed"
+      ]
+    },
+    "reply": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "skill_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "input": {
+            "type": "object"
+          },
+          "output": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "used_skill_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ui_actions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

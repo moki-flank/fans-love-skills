@@ -1,7 +1,7 @@
 {
   "registry_id": "fans-love-skills",
   "name": "Fans Love Skills Registry",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "updated_at": "2026-06-01",
   "homepage": "https://moki-flank.github.io/fans-love-skills/",
   "github_repository": "git@github.com:moki-flank/fans-love-skills.git",
@@ -16,6 +16,14 @@
     "secret_policy": "Secrets live in local runtime or n8n credentials only and must not be committed."
   },
   "skills": [
+    {
+      "skill_id": "fan.codex_loop_agent.v1",
+      "name": "Codex 式循环智能体 Skill",
+      "version": "1.0.0",
+      "type": "agent_skill",
+      "manifest_url": "https://moki-flank.github.io/fans-love-skills/skills/fan.codex_loop_agent.v1/skill.json",
+      "enabled": true
+    },
     {
       "skill_id": "fan.app_agent.v1",
       "name": "FS Love 应用智能体 Skill",
@@ -66,6 +74,13 @@
     }
   ],
   "agents": [
+    {
+      "agent_id": "fans_love_loop_agent.v1",
+      "name": "FS Love Codex 式循环智能体",
+      "manifest_url": "https://moki-flank.github.io/fans-love-skills/agents/fans_love_loop_agent.v1/agent.json",
+      "entry_skill_id": "fan.codex_loop_agent.v1",
+      "enabled": true
+    },
     {
       "agent_id": "fans_love_app_agent.v1",
       "name": "FS Love 应用智能体",

@@ -66,3 +66,31 @@ create table if not exists fan_daily_task_recommendations (
   pet_suggestion text,
   created_at timestamptz not null default now()
 );
+
+create table if not exists fan_agent_loop_runs (
+  id bigserial primary key,
+  run_id text not null unique,
+  user_id text not null,
+  conversation_id text,
+  card_id text,
+  model text,
+  status text not null,
+  user_message text not null,
+  final_reply text,
+  used_skill_ids jsonb not null default '[]'::jsonb,
+  app_context jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  completed_at timestamptz
+);
+
+create table if not exists fan_agent_loop_steps (
+  id bigserial primary key,
+  run_id text not null references fan_agent_loop_runs(run_id) on delete cascade,
+  step_index integer not null,
+  step_type text not null,
+  skill_id text,
+  reason text,
+  input jsonb not null default '{}'::jsonb,
+  output jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);

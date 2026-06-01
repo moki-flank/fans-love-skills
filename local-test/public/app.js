@@ -1,4 +1,78 @@
 const skills = {
+  loop: {
+    title: "智能体 - Codex 式循环",
+    route: "/api/agent/loop",
+    sample: {
+      user_id: "user_001",
+      conversation_id: "local-loop-conversation",
+      card_id: "pet_support_cat_v1",
+      message: "帮我判断今天要先做什么，如果需要就调用对应 skill，直到没有下一步。",
+      max_steps: 20,
+      dry_run: false,
+      app_context: {
+        route: "/pet/ai",
+        current_tab_index: 0,
+        current_user: {
+          id: "user_001",
+          nickname: "Archer Fan",
+          points: 2568,
+          current_star_id: "star_001",
+          my_star_votes_today: 12,
+          my_star_votes_total: 20,
+          companion_days: 197
+        },
+        current_star: {
+          id: "star_001",
+          name: "Archer",
+          rank: 1,
+          support_count: 125669980
+        },
+        pet: {
+          pet_id: "emo",
+          intimacy: 75,
+          mood: "happy"
+        },
+        projects: [
+          {
+            id: "cf_001",
+            title: "应援演唱会应援项目",
+            star_id: "star_001",
+            target_votes: 50000,
+            current_votes: 33000,
+            status: "active"
+          }
+        ],
+        tasks: [
+          {
+            id: "daily_check_in",
+            title: "今日签到",
+            current_progress: 1,
+            total_progress: 1,
+            reward_points: 10,
+            is_claimable: true,
+            type: "daily"
+          },
+          {
+            id: "pet_touch",
+            title: "和小 emo 互动",
+            current_progress: 0,
+            total_progress: 1,
+            reward_points: 8,
+            is_claimable: false,
+            type: "pet"
+          }
+        ],
+        memory_records: [
+          {
+            id: "record_001",
+            content: "很开心，今天的演出太棒了！",
+            location: "上海",
+            image_urls: ["assets/images/democard1.png"]
+          }
+        ]
+      }
+    }
+  },
   agent: {
     title: "智能体 - FS Love 应用路由",
     route: "/api/agent/fans-love-chat",
@@ -184,7 +258,7 @@ const resetButton = document.querySelector("#resetButton");
 const copyButton = document.querySelector("#copyButton");
 const workflowButtons = [...document.querySelectorAll(".workflow")];
 
-let activeSkill = "agent";
+let activeSkill = "loop";
 
 function pretty(value) {
   return JSON.stringify(value, null, 2);

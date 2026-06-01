@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Codex Loop Agent Input",
+  "type": "object",
+  "required": [
+    "user_id",
+    "message"
+  ],
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "conversation_id": {
+      "type": "string"
+    },
+    "card_id": {
+      "type": "string",
+      "default": "pet_support_cat_v1"
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "app_context": {
+      "$ref": "https://moki-flank.github.io/fans-love-skills/integrations/fans-love/app-context.schema.json"
+    },
+    "allowed_skill_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "max_steps": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 20,
+      "description": "0 means no explicit step limit; use only for trusted local runs."
+    },
+    "dry_run": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "additionalProperties": true
+}

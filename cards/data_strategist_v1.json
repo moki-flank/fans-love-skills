@@ -9,6 +9,7 @@
     "speaking_style": "先给结论，再给理由和下一步。"
   },
   "allowed_skills": [
+    "fan.codex_loop_agent.v1",
     "fan.app_agent.v1",
     "fan.star_consulting.v1",
     "fan.daily_task_planner.v1",
