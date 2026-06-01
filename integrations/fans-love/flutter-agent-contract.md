@@ -60,7 +60,9 @@ Use `fan.app_agent.v1` only for deterministic lightweight routing. Use `fan.code
 Default Flutter behavior:
 
 1. `PetAIPage` sends user message and `AppState` snapshot to `/api/agent/loop`.
-2. Backend loads `fans_love_loop_agent.v1`.
-3. Runtime exposes allowed Skills as tools.
-4. Model calls only the Skills it needs.
-5. Runtime returns final `reply`, `steps`, `used_skill_ids`, and `ui_actions`.
+2. Backend proxies to n8n `/webhook/agent/fans-love-loop`.
+3. n8n loads the closed-loop AI workflow and calls OpenAI.
+4. n8n exposes allowed Skills as model tools.
+5. Model calls only the Skills it needs.
+6. n8n calls the Skill webhook, observes the result, and loops.
+7. n8n returns final `reply`, `steps`, `used_skill_ids`, and `ui_actions`.

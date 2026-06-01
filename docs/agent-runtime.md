@@ -1,8 +1,8 @@
 # Agent Runtime
 
-`fan.codex_loop_agent.v1` is the local large-model runtime for FS Love.
+`fan.codex_loop_agent.v1` is the large-model runtime contract for FS Love.
 
-It is the default intelligent agent entrypoint. See
+It is the default intelligent agent entrypoint. The primary runtime is n8n, and the local Node runtime remains a fallback/debug runner. See
 `docs/agent-closed-loop-plan.md` for the end-to-end plan.
 
 It uses the OpenAI Responses API with function tools:
@@ -38,10 +38,22 @@ Local variables:
 - `OPENAI_MODEL`: model name, default `gpt-5.5`.
 - `OPENAI_REASONING_EFFORT`: optional reasoning effort, for example `medium`.
 
-Local test endpoint:
+Default local test endpoint:
 
 ```text
 POST http://localhost:5179/api/agent/loop
+```
+
+This proxies to the n8n AI loop workflow:
+
+```text
+POST ${N8N_BASE_URL}/webhook/agent/fans-love-loop
+```
+
+Fallback local runtime endpoint:
+
+```text
+POST http://localhost:5179/api/agent/local-loop
 ```
 
 The frontend should eventually call one backend endpoint:

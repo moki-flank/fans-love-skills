@@ -1,6 +1,22 @@
 {
-  "name": "智能体 - FS Love 应用路由",
+  "name": "智能体 - FS Love AI 闭环对话",
   "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agent/fans-love-loop",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f02001",
+      "name": "默认入口 - 对话 Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -860,
+        -80
+      ]
+    },
     {
       "parameters": {
         "httpMethod": "POST",
@@ -8,26 +24,52 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f01001",
-      "name": "Webhook",
+      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f02002",
+      "name": "兼容入口 - 旧对话 Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -420,
-        0
+        -860,
+        120
       ]
     },
     {
       "parameters": {
-        "jsCode": "const payload = $json.body ?? $json;\nconst message = String(payload.message ?? '').toLowerCase();\nconst context = payload.app_context ?? {};\nconst route = String(context.route ?? '');\nconst has = (...words) => words.some((word) => message.includes(word));\nlet selectedSkillId = 'fan.pet_interaction.v1';\nlet confidence = 0.62;\nlet reply = '我在，可以陪你一起看今天该做什么。';\nlet uiActions = [];\nif (has('卡片', '回忆', '照片', '生成') || route.includes('memories')) {\n  selectedSkillId = 'fan.memory_card_generation.v1';\n  confidence = 0.86;\n  reply = '可以，我会优先帮你把回忆整理成一张可预览的卡片。';\n  uiActions = [{ type: 'navigate', label: '去创造卡片', route: '/memories' }];\n} else if (has('任务', '积分', '奖励', '亲密') || route.includes('/pet/task')) {\n  selectedSkillId = 'fan.daily_task_planner.v1';\n  confidence = 0.84;\n  reply = '今天先做最接近完成的任务，再领能马上到账的奖励。';\n  uiActions = [{ type: 'navigate', label: '查看今日任务', route: '/pet/task' }];\n} else if (has('众筹', '投票', '榜', '排行', '项目', '应援') || route.includes('/crowdfunding')) {\n  selectedSkillId = 'fan.star_consulting.v1';\n  confidence = 0.82;\n  reply = '我会结合票数、项目进度和榜单位置，给你一个不焦虑的应援顺序。';\n  uiActions = [{ type: 'navigate', label: '查看众筹', route: '/crowdfunding' }];\n} else if (has('审核', '核验', '截图', '金额', '记录')) {\n  selectedSkillId = 'fan.record_verify.v1';\n  confidence = 0.78;\n  reply = '这类内容适合先做一致性检查，低置信度结果会交给人工复核。';\n} else if (has('喂', '摸', '玩', '宠物', '陪', 'emo', '小emo')) {\n  selectedSkillId = 'fan.pet_interaction.v1';\n  confidence = 0.8;\n  reply = '小 emo 收到啦，这次互动会转成心情和亲密度变化。';\n  uiActions = [{ type: 'navigate', label: '回到宠物页', route: '/pet' }];\n}\nconst skillResult = {\n  route,\n  current_user_id: context.current_user?.id ?? payload.user_id,\n  current_star: context.current_star?.name ?? context.current_user?.current_star_id,\n  pet_intimacy: context.pet?.intimacy,\n  projects_count: Array.isArray(context.projects) ? context.projects.length : 0,\n  tasks_count: Array.isArray(context.tasks) ? context.tasks.length : 0,\n  memory_records_count: Array.isArray(context.memory_records) ? context.memory_records.length : 0\n};\nreturn [{ json: { skill_id: 'fan.app_agent.v1', status: 'ok', reply, selected_skill_id: selectedSkillId, confidence, skill_result: skillResult, ui_actions: uiActions, state_patches: [], received: payload } }];"
+        "jsCode": "const incoming = $json.body ?? $json;\nconst headers = $json.headers ?? {};\nconst proto = headers['x-forwarded-proto'] ?? headers['X-Forwarded-Proto'] ?? 'http';\nconst host = headers.host ?? headers.Host ?? '106.55.254.9:5678';\nconst runtimeBaseUrl = incoming.n8n_base_url ?? `${proto}://${host}`;\nconst payload = {\n  user_id: incoming.user_id ?? incoming.app_context?.current_user?.id ?? 'local-user',\n  agent_id: incoming.agent_id ?? 'fans_love_loop_agent.v1',\n  entry_skill_id: incoming.entry_skill_id ?? 'fan.codex_loop_agent.v1',\n  conversation_id: incoming.conversation_id ?? `conv_${Date.now()}`,\n  card_id: incoming.card_id ?? 'pet_support_cat_v1',\n  message: incoming.message ?? '',\n  app_context: incoming.app_context ?? {},\n  max_steps: Number(incoming.max_steps ?? 20),\n  allow_mock: Boolean(incoming.allow_mock ?? false),\n  model: incoming.model,\n  openai_api_key: incoming.openai_api_key,\n  runtime_base_url: runtimeBaseUrl\n};\nreturn [{ json: { payload, headers } }];"
       },
-      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f01002",
-      "name": "Route Skill",
+      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f02003",
+      "name": "准备对话上下文",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -180,
-        0
+        -580,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $json.payload;\nconst headers = $json.headers ?? {};\nconst httpRequest = this.helpers.httpRequest.bind(this.helpers);\n\nfunction readEnv(name) {\n  try {\n    return process?.env?.[name];\n  } catch {\n    return undefined;\n  }\n}\n\nconst openaiApiKey =\n  payload.openai_api_key ??\n  headers[\"x-openai-api-key\"] ??\n  headers[\"X-OpenAI-API-Key\"] ??\n  readEnv(\"OPENAI_API_KEY\");\nconst model = payload.model ?? readEnv(\"OPENAI_MODEL\") ?? \"gpt-5.5\";\nconst maxSteps = Number(payload.max_steps ?? readEnv(\"AGENT_MAX_STEPS\") ?? 20) || 0;\nconst hasStepLimit = maxSteps > 0;\nconst runtimeBaseUrl = String(payload.runtime_base_url ?? \"\").replace(/\\/+$/, \"\");\nconst allowMock = payload.allow_mock === true || readEnv(\"AGENT_RUNTIME_MODE\") === \"mock\";\n\nconst skills = [\n  {\n    skill_id: \"fan.app_agent.v1\",\n    name: \"应用轻量路由\",\n    path: \"/webhook/agent/fans-love-chat\",\n    description: \"轻量意图路由和页面建议。\"\n  },\n  {\n    skill_id: \"fan.pet_interaction.v1\",\n    name: \"萌宠互动\",\n    path: \"/webhook/skill/pet-interaction\",\n    description: \"宠物互动和状态变化。\"\n  },\n  {\n    skill_id: \"fan.daily_task_planner.v1\",\n    name: \"每日任务规划\",\n    path: \"/webhook/skill/daily-task-planner\",\n    description: \"任务、积分、亲密度优先级。\"\n  },\n  {\n    skill_id: \"fan.memory_card_generation.v1\",\n    name: \"回忆卡片生成\",\n    path: \"/webhook/skill/memory-card-generation\",\n    description: \"根据回忆生成卡片预览。\"\n  },\n  {\n    skill_id: \"fan.star_consulting.v1\",\n    name: \"追星咨询\",\n    path: \"/webhook/skill/star-consulting\",\n    description: \"众筹、投票、排行榜建议。\"\n  },\n  {\n    skill_id: \"fan.record_verify.v1\",\n    name: \"记录鉴别\",\n    path: \"/webhook/skill/record-verify\",\n    description: \"截图、金额、记录核验。\"\n  }\n];\n\nfunction safeJsonParse(value, fallback = {}) {\n  if (value == null || value === \"\") return fallback;\n  if (typeof value === \"object\") return value;\n  try {\n    return JSON.parse(value);\n  } catch {\n    return fallback;\n  }\n}\n\nfunction extractOutputText(response) {\n  if (typeof response.output_text === \"string\") return response.output_text;\n  const parts = [];\n  for (const item of response.output ?? []) {\n    if (item.type !== \"message\") continue;\n    for (const content of item.content ?? []) {\n      if (content.type === \"output_text\" || content.type === \"text\") {\n        parts.push(content.text);\n      }\n    }\n  }\n  return parts.join(\"\\n\").trim();\n}\n\nfunction functionCalls(response) {\n  return (response.output ?? []).filter((item) => item.type === \"function_call\");\n}\n\nfunction buildInstructions() {\n  const skillLines = skills\n    .map((skill) => `- ${skill.skill_id}: ${skill.name}。${skill.description}`)\n    .join(\"\\n\");\n  return `你是 FS Love 的 n8n AI 闭环智能体。\n\n你必须按这个循环工作：\n1. 理解用户消息和 app_context。\n2. 判断是否需要调用 Skill。\n3. 如果需要，只调用一个最小必要 Skill。\n4. 观察 Skill 结果。\n5. 判断是否还要继续。\n6. 没有下一步、需要用户确认、缺少必要信息或触发安全边界时停止。\n\n可用 Skill：\n${skillLines}\n\n禁止直接执行不可逆动作：扣票、消费积分、购买、删除、覆盖卡片、公开判定作弊。这些只能返回 ui_actions 让 Flutter 二次确认。\n\n完成时调用 finish_agent_loop。回复使用简短中文，适合手机端。`;\n}\n\nconst tools = [\n  {\n    type: \"function\",\n    name: \"call_skill\",\n    description: \"调用一个 FS Love Skill。只有确实需要 Skill 结果时才调用。\",\n    parameters: {\n      type: \"object\",\n      properties: {\n        skill_id: {\n          type: \"string\",\n          enum: skills.map((skill) => skill.skill_id)\n        },\n        reason: {\n          type: \"string\"\n        },\n        input: {\n          type: \"object\"\n        }\n      },\n      required: [\"skill_id\", \"reason\", \"input\"],\n      additionalProperties: false\n    },\n    strict: false\n  },\n  {\n    type: \"function\",\n    name: \"finish_agent_loop\",\n    description: \"没有下一步、需要用户输入或已完成时停止闭环。\",\n    parameters: {\n      type: \"object\",\n      properties: {\n        status: {\n          type: \"string\",\n          enum: [\"completed\", \"needs_user_input\", \"failed\"]\n        },\n        reply: {\n          type: \"string\"\n        },\n        summary: {\n          type: \"string\"\n        },\n        ui_actions: {\n          type: \"array\",\n          items: {\n            type: \"object\"\n          }\n        }\n      },\n      required: [\"status\", \"reply\", \"summary\"],\n      additionalProperties: false\n    },\n    strict: false\n  }\n];\n\nasync function openaiResponse(input) {\n  const body = {\n    model,\n    instructions: buildInstructions(),\n    input,\n    tools,\n    store: false\n  };\n  const reasoningEffort = readEnv(\"OPENAI_REASONING_EFFORT\");\n  if (reasoningEffort) body.reasoning = { effort: reasoningEffort };\n\n  try {\n    return await httpRequest({\n      method: \"POST\",\n      url: \"https://api.openai.com/v1/responses\",\n      headers: {\n        \"Content-Type\": \"application/json\",\n        Authorization: `Bearer ${openaiApiKey}`\n      },\n      body,\n      json: true\n    });\n  } catch (error) {\n    return {\n      error: true,\n      status: error.statusCode ?? error.status ?? 500,\n      body: error.response?.body ?? error.message\n    };\n  }\n}\n\nfunction heuristicSkillId() {\n  const msg = String(payload.message ?? \"\").toLowerCase();\n  const route = String(payload.app_context?.route ?? \"\");\n  const has = (...words) => words.some((word) => msg.includes(word));\n  if (has(\"卡片\", \"回忆\", \"照片\", \"生成\") || route.includes(\"memories\")) {\n    return \"fan.memory_card_generation.v1\";\n  }\n  if (has(\"任务\", \"积分\", \"奖励\", \"亲密\") || route.includes(\"/pet/task\")) {\n    return \"fan.daily_task_planner.v1\";\n  }\n  if (has(\"众筹\", \"投票\", \"排行\", \"榜\", \"应援\") || route.includes(\"/crowdfunding\")) {\n    return \"fan.star_consulting.v1\";\n  }\n  if (has(\"审核\", \"核验\", \"截图\", \"金额\")) {\n    return \"fan.record_verify.v1\";\n  }\n  return \"fan.pet_interaction.v1\";\n}\n\nfunction deriveSkillInput(skillId) {\n  const context = payload.app_context ?? {};\n  const user = context.current_user ?? {};\n  const base = {\n    user_id: payload.user_id ?? user.id ?? \"local-user\",\n    card_id: payload.card_id ?? \"pet_support_cat_v1\"\n  };\n  if (skillId === \"fan.daily_task_planner.v1\") {\n    return {\n      ...base,\n      points: user.points,\n      pet_intimacy: context.pet?.intimacy,\n      current_star: context.current_star,\n      tasks: context.tasks ?? []\n    };\n  }\n  if (skillId === \"fan.memory_card_generation.v1\") {\n    const record = (context.memory_records ?? [])[0] ?? {};\n    return {\n      ...base,\n      style: \"warm_album\",\n      record: {\n        id: record.id ?? \"record_local\",\n        content: record.content ?? payload.message,\n        location: record.location,\n        created_at: record.created_at ?? record.createdAt,\n        image_urls: record.image_urls ?? record.imageUrls ?? []\n      }\n    };\n  }\n  if (skillId === \"fan.star_consulting.v1\") {\n    return {\n      ...base,\n      star_id: context.current_star?.id ?? user.current_star_id,\n      available_votes: user.my_star_votes_today ?? 0,\n      projects: context.projects ?? [],\n      rankings: context.stars ?? []\n    };\n  }\n  if (skillId === \"fan.record_verify.v1\") {\n    return {\n      ...base,\n      metadata: {\n        source: \"n8n_ai_loop\",\n        message: payload.message\n      }\n    };\n  }\n  if (skillId === \"fan.app_agent.v1\") return payload;\n  return {\n    ...base,\n    pet_id: context.pet?.pet_id ?? \"emo\",\n    action: \"check_in\",\n    context: {\n      message: payload.message\n    }\n  };\n}\n\nasync function callSkill(skillId, input) {\n  const skill = skills.find((item) => item.skill_id === skillId);\n  if (!skill) return { ok: false, error: `Skill not allowed: ${skillId}` };\n  const url = `${runtimeBaseUrl}${skill.path}`;\n  try {\n    const output = await httpRequest({\n      method: \"POST\",\n      url,\n      headers: {\n        \"Content-Type\": \"application/json\"\n      },\n      body: input ?? {},\n      json: true\n    });\n    return {\n      ok: true,\n      status: 200,\n      skill_id: skillId,\n      output\n    };\n  } catch (error) {\n    return {\n      ok: false,\n      status: error.statusCode ?? error.status ?? 500,\n      skill_id: skillId,\n      output: error.response?.body ?? error.message\n    };\n  }\n}\n\nif (!runtimeBaseUrl) {\n  return [\n    {\n      json: {\n        status: \"failed\",\n        reply: \"n8n runtime_base_url 缺失，无法调用 Skill webhook。\",\n        steps: [],\n        used_skill_ids: []\n      }\n    }\n  ];\n}\n\nif (!openaiApiKey && !allowMock) {\n  return [\n    {\n      json: {\n        status: \"needs_configuration\",\n        reply:\n          \"n8n 还没有配置 OPENAI_API_KEY，所以 AI 闭环工作流已就绪但不能真正调用大模型。请在 n8n 运行环境中设置 OPENAI_API_KEY 后重启 n8n。\",\n        model,\n        steps: [],\n        used_skill_ids: [],\n        ui_actions: [\n          {\n            type: \"show_toast\",\n            label: \"请配置 n8n 的 OPENAI_API_KEY\"\n          }\n        ],\n        required_env: [\"OPENAI_API_KEY\"]\n      }\n    }\n  ];\n}\n\nif (!openaiApiKey && allowMock) {\n  const skillId = heuristicSkillId();\n  const input = deriveSkillInput(skillId);\n  const result = await callSkill(skillId, input);\n  return [\n    {\n      json: {\n        status: result.ok ? \"completed\" : \"failed\",\n        reply: result.ok\n          ? `Mock 闭环已调用 ${skillId}，没有更多必须执行的下一步。`\n          : `Mock 闭环调用 ${skillId} 失败。`,\n        model: \"n8n-mock-loop\",\n        steps: [\n          {\n            index: 1,\n            type: \"call_skill\",\n            skill_id: skillId,\n            reason: \"allow_mock=true 时使用 n8n 启发式兜底。\",\n            input,\n            output: result\n          }\n        ],\n        used_skill_ids: [skillId],\n        ui_actions: result.output?.ui_actions ?? result.output?.next_actions ?? []\n      }\n    }\n  ];\n}\n\nlet input = [\n  {\n    type: \"message\",\n    role: \"user\",\n    content: [\n      {\n        type: \"input_text\",\n        text: JSON.stringify(\n          {\n            user_request: payload.message,\n            user_id: payload.user_id,\n            conversation_id: payload.conversation_id,\n            card_id: payload.card_id,\n            app_context: payload.app_context ?? {},\n            max_steps: maxSteps\n          },\n          null,\n          2\n        )\n      }\n    ]\n  }\n];\nconst steps = [];\nconst usedSkillIds = new Set();\n\nfor (let iteration = 1; ; iteration++) {\n  if (hasStepLimit && iteration > maxSteps) {\n    return [\n      {\n        json: {\n          status: \"max_steps_reached\",\n          reply: `已执行 ${maxSteps} 轮，达到安全上限。`,\n          model,\n          steps,\n          used_skill_ids: [...usedSkillIds],\n          ui_actions: []\n        }\n      }\n    ];\n  }\n\n  const response = await openaiResponse(input);\n  if (response.error) {\n    return [\n      {\n        json: {\n          status: \"failed\",\n          reply: \"OpenAI 调用失败。\",\n          model,\n          steps,\n          openai_error: response\n        }\n      }\n    ];\n  }\n\n  const calls = functionCalls(response);\n  const outputText = extractOutputText(response);\n  steps.push({\n    index: steps.length + 1,\n    type: \"model_response\",\n    response_id: response.id,\n    output_text: outputText,\n    function_calls: calls.map((call) => ({\n      name: call.name,\n      call_id: call.call_id\n    }))\n  });\n\n  if (calls.length === 0) {\n    return [\n      {\n        json: {\n          status: \"completed\",\n          reply: outputText || \"已完成，没有更多需要执行的动作。\",\n          model,\n          steps,\n          used_skill_ids: [...usedSkillIds],\n          ui_actions: []\n        }\n      }\n    ];\n  }\n\n  input = [...input, ...(response.output ?? [])];\n  const functionOutputs = [];\n\n  for (const call of calls) {\n    const args = safeJsonParse(call.arguments, {});\n    if (call.name === \"finish_agent_loop\") {\n      return [\n        {\n          json: {\n            status: args.status ?? \"completed\",\n            reply: args.reply ?? outputText ?? \"已完成。\",\n            model,\n            steps: [\n              ...steps,\n              {\n                index: steps.length + 1,\n                type: \"finish\",\n                summary: args.summary,\n                ui_actions: args.ui_actions ?? []\n              }\n            ],\n            used_skill_ids: [...usedSkillIds],\n            ui_actions: args.ui_actions ?? []\n          }\n        }\n      ];\n    }\n    if (call.name !== \"call_skill\") {\n      functionOutputs.push({\n        type: \"function_call_output\",\n        call_id: call.call_id,\n        output: JSON.stringify({\n          ok: false,\n          error: `Unknown tool: ${call.name}`\n        })\n      });\n      continue;\n    }\n\n    const skillId = args.skill_id;\n    usedSkillIds.add(skillId);\n    const result = await callSkill(skillId, args.input ?? {});\n    steps.push({\n      index: steps.length + 1,\n      type: \"call_skill\",\n      skill_id: skillId,\n      reason: args.reason,\n      input: args.input ?? {},\n      output: result\n    });\n    functionOutputs.push({\n      type: \"function_call_output\",\n      call_id: call.call_id,\n      output: JSON.stringify(result)\n    });\n  }\n\n  input = [...input, ...functionOutputs];\n}\n"
+      },
+      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f02004",
+      "name": "AI 智能体闭环 - OpenAI + Skill Tools",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const result = $json;\nconst steps = result.steps ?? [];\nconst usedSkillIds = result.used_skill_ids ?? [];\nreturn [{ json: { ...result, agent_id: 'fans_love_loop_agent.v1', entry_skill_id: 'fan.codex_loop_agent.v1', closed_loop: true, step_count: steps.length, used_skill_ids: usedSkillIds, executed_at: new Date().toISOString() } }];"
+      },
+      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f02005",
+      "name": "整理闭环输出",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60,
+        20
       ]
     },
     {
@@ -36,33 +78,66 @@
         "responseBody": "={{ $json }}",
         "options": {}
       },
-      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f01003",
-      "name": "Respond to Webhook",
+      "id": "9ad60e11-1224-4cd4-a76d-0bdbf2f02006",
+      "name": "返回 AI 对话结果",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        60,
-        0
+        360,
+        20
       ]
     }
   ],
   "connections": {
-    "Webhook": {
+    "默认入口 - 对话 Webhook": {
       "main": [
         [
           {
-            "node": "Route Skill",
+            "node": "准备对话上下文",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Route Skill": {
+    "兼容入口 - 旧对话 Webhook": {
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "准备对话上下文",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "准备对话上下文": {
+      "main": [
+        [
+          {
+            "node": "AI 智能体闭环 - OpenAI + Skill Tools",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI 智能体闭环 - OpenAI + Skill Tools": {
+      "main": [
+        [
+          {
+            "node": "整理闭环输出",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "整理闭环输出": {
+      "main": [
+        [
+          {
+            "node": "返回 AI 对话结果",
             "type": "main",
             "index": 0
           }

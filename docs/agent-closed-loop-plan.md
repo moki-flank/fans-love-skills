@@ -27,13 +27,14 @@ fan.codex_loop_agent.v1
 ```text
 Flutter App
   -> POST /api/agent/loop
-  -> Agent Runtime
-  -> OpenAI Responses 模型
+  -> 本地/后端代理
+  -> n8n: /webhook/agent/fans-love-loop
+  -> n8n Code Node 调用 OpenAI Responses 模型
   -> 判断是否需要 Skill
   -> call_skill
   -> n8n webhook 执行 Skill
   -> Skill JSON 结果
-  -> Agent Runtime 回填观察结果给模型
+  -> n8n 回填观察结果给模型
   -> 模型继续判断
   -> 无下一步 / 需要用户确认 / 达到边界
   -> finish_agent_loop
@@ -68,11 +69,11 @@ Flutter 每次调用都传：
 1. Agent Runtime 加载 GitHub Registry。
 2. 读取 `default_agent_id`，默认选择 `fans_love_loop_agent.v1`。
 3. 读取 `entry_skill_id`，进入 `fan.codex_loop_agent.v1`。
-4. Runtime 将可用 Skill 暴露成模型工具：
+4. n8n AI 闭环节点将可用 Skill 暴露成模型工具：
    - `call_skill`
    - `finish_agent_loop`
 5. 模型每轮只能选择一个最小必要 Skill。
-6. Runtime 执行 Skill 并把结果回填给模型。
+6. n8n 执行 Skill webhook 并把结果回填给模型。
 7. 模型判断是否继续。
 8. 没有必要动作时停止。
 
@@ -113,21 +114,22 @@ Agent 必须在以下任一情况停止：
 
 ## 阶段计划
 
-### Phase 1: 本地闭环
+### Phase 1: n8n 闭环
 
-状态：已完成。
+状态：已完成模板，待 n8n 配置 `OPENAI_API_KEY` 后真实调用模型。
 
 - 建立 Skill Registry。
 - 建立 6 个 n8n workflow。
-- 建立 `/api/agent/loop` 本地 runtime。
+- 建立 n8n AI 闭环 workflow。
+- 建立 `/api/agent/loop` 本地代理。
 - 建立本地测试台。
-- 无 OpenAI key 时 mock fallback 可跑通。
+- 无 OpenAI key 时返回配置提示，`allow_mock=true` 时可跑通结构。
 
 ### Phase 2: 大模型接入
 
 状态：待配置 key。
 
-- 在 `.env.local` 写入 `OPENAI_API_KEY`。
+- 在 n8n 运行环境写入 `OPENAI_API_KEY`。
 - 设置 `OPENAI_MODEL=gpt-5.5`。
 - 用测试台验证模型是否会调用 Skill。
 - 调整 prompt，让模型少调用无意义 Skill。

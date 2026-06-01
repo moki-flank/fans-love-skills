@@ -10,7 +10,7 @@ const skills = {
       card_id: "pet_support_cat_v1",
       message: "帮我判断今天要先做什么，如果需要就调用对应 skill，直到没有下一步。",
       max_steps: 20,
-      dry_run: false,
+      allow_mock: false,
       app_context: {
         route: "/pet/ai",
         current_tab_index: 0,

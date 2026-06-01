@@ -25,10 +25,12 @@
     "fan.record_verify.v1"
   ],
   "execution": {
-    "type": "agent_runtime",
-    "endpoint": "/api/agent/loop",
+    "type": "n8n_ai_workflow",
+    "endpoint_template": "${N8N_BASE_URL}/webhook/agent/fans-love-loop",
+    "local_proxy_endpoint": "/api/agent/loop",
     "method": "POST",
-    "runtime_file": "runtime/agent-loop.mjs"
+    "workflow_file": "n8n/workflows/fans-love-app-agent.workflow.json",
+    "local_fallback_runtime_file": "runtime/agent-loop.mjs"
   },
   "loop_policy": {
     "stop_when": [

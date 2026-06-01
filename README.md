@@ -12,7 +12,7 @@ GitHub stores static definitions:
 
 n8n, an API server, or a worker executes the real side effects. The agent runtime reads this registry, chooses a skill, validates input, calls the configured execution backend, and formats the result in the selected card style.
 
-The default intelligent agent is `fans_love_loop_agent.v1`, and clients should call `POST /api/agent/loop` first.
+The default intelligent agent is `fans_love_loop_agent.v1`, and clients should call `POST /api/agent/loop` first. That endpoint now proxies to the real n8n AI closed-loop workflow at `/webhook/agent/fans-love-loop`.
 
 The current registry is aligned with the local Flutter app at `/Users/mokiwang/Desktop/Fans-love`:
 

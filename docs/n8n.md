@@ -14,6 +14,7 @@ Workflow deletion is guarded by `N8N_CONFIRM_WIPE=DELETE_ALL_N8N_WORKFLOWS` beca
 
 Current production webhook paths:
 
+- `POST /webhook/agent/fans-love-loop`
 - `POST /webhook/agent/fans-love-chat`
 - `POST /webhook/skill/star-consulting`
 - `POST /webhook/skill/pet-interaction`
@@ -21,8 +22,19 @@ Current production webhook paths:
 - `POST /webhook/skill/daily-task-planner`
 - `POST /webhook/skill/record-verify`
 
-The Codex-style large-model loop is local runtime first:
+The default Codex-style large-model loop now runs in n8n first:
 
 - `POST /api/agent/loop`
 
-That runtime can call the n8n webhooks above as tools.
+The local endpoint proxies to:
+
+- `POST ${N8N_BASE_URL}/webhook/agent/fans-love-loop`
+
+The n8n workflow calls OpenAI directly and then calls the Skill webhooks above as tools.
+
+Required n8n runtime environment:
+
+- `OPENAI_API_KEY`
+- `OPENAI_MODEL` optional, default `gpt-5.5`
+- `OPENAI_REASONING_EFFORT` optional
+- `AGENT_MAX_STEPS` optional, default `20`

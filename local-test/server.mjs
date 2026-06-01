@@ -13,6 +13,7 @@ loadEnvFile(join(root, ".env.local"));
 loadEnvFile(join(root, ".env"));
 
 const skillRoutes = {
+  "/api/agent/fans-love-loop": "/webhook/agent/fans-love-loop",
   "/api/agent/fans-love-chat": "/webhook/agent/fans-love-chat",
   "/api/skill/star-consulting": "/webhook/skill/star-consulting",
   "/api/skill/pet-interaction": "/webhook/skill/pet-interaction",
@@ -141,8 +142,12 @@ const server = createServer(async (request, response) => {
       await listWorkflows(response);
       return;
     }
-    if (request.method === "POST" && url.pathname === "/api/agent/loop") {
+    if (request.method === "POST" && url.pathname === "/api/agent/local-loop") {
       await runLocalAgentLoop(request, response);
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/api/agent/loop") {
+      await proxySkill(request, response, "/webhook/agent/fans-love-loop");
       return;
     }
     if (request.method === "POST" && skillRoutes[url.pathname]) {

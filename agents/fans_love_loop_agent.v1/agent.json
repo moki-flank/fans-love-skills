@@ -17,8 +17,10 @@
     "fan.record_verify.v1"
   ],
   "runtime": {
-    "type": "openai_responses_loop",
-    "local_endpoint": "/api/agent/loop",
+    "type": "n8n_openai_responses_loop",
+    "n8n_webhook_path": "/webhook/agent/fans-love-loop",
+    "local_proxy_endpoint": "/api/agent/loop",
+    "local_fallback_endpoint": "/api/agent/local-loop",
     "default_invocation": true,
     "model_env": "OPENAI_MODEL",
     "api_key_env": "OPENAI_API_KEY",

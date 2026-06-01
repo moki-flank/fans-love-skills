@@ -10,6 +10,7 @@
     "default_entry_skill_id": "fan.codex_loop_agent.v1",
     "default_card_id": "pet_support_cat_v1",
     "agent_entrypoint": "/api/agent/loop",
+    "n8n_agent_webhook": "${N8N_BASE_URL}/webhook/agent/fans-love-loop",
     "github_pages_base_url": "https://moki-flank.github.io/fans-love-skills",
     "execution_backends": [
       "prompt",
